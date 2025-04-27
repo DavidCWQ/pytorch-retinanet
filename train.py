@@ -189,6 +189,13 @@ def main(args=None):
                 print(e)
                 continue
 
+        # Adjust learning rate based on validation loss
+        scheduler.step(np.mean(epoch_loss))
+
+        # Save model checkpoint
+        torch.save(retinanet.module, '{}/{}_retinanet_{}.pt'.format(path, parser.dataset, epoch_num))
+        # Save before evaluation
+
         # -------------------- Evaluation --------------------
         if parser.dataset == 'coco':
             print('Evaluating dataset.')
@@ -197,12 +204,6 @@ def main(args=None):
         elif parser.dataset == 'csv' and parser.csv_val is not None:
             print('Evaluating dataset.')
             mAP = csv_eval.evaluate(dataset_val, retinanet)
-
-        # Adjust learning rate based on validation loss
-        scheduler.step(np.mean(epoch_loss))
-
-        # Save model checkpoint
-        torch.save(retinanet.module, '{}/{}_retinanet_{}.pt'.format(path, parser.dataset, epoch_num))
 
     # ------------------- Save Final Model -------------------
     retinanet.eval()
