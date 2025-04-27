@@ -1,3 +1,6 @@
+import time
+start_time = time.time()
+
 import argparse
 import collections
 import numpy as np
@@ -38,6 +41,7 @@ def main(args=None):
     parser = parser.parse_args(args)
 
     # --------------------- Dataset Setup ---------------------
+    print('Setting up Dataset...')
     if parser.dataset == 'coco':
         if parser.coco_path is None:
             raise ValueError('Must provide --coco_path when training on COCO.')
@@ -80,12 +84,14 @@ def main(args=None):
         raise ValueError('Dataset type not understood (must be csv or coco). Exiting.')
 
     # ------------------- DataLoader Setup --------------------
-    sampler = AspectRatioBasedSampler(dataset_train, batch_size=2, drop_last=False)
-    dataloader_train = DataLoader(dataset_train, num_workers=3, collate_fn=collater, batch_sampler=sampler)
+    print('Setting up Loaders...')
+    sampler = AspectRatioBasedSampler(dataset_train, batch_size=64, drop_last=False)
+    dataloader_train = DataLoader(dataset_train, num_workers=32, collate_fn=collater, batch_sampler=sampler)
 
     if dataset_val is not None:
-        sampler_val = AspectRatioBasedSampler(dataset_val, batch_size=1, drop_last=False)
-        dataloader_val = DataLoader(dataset_val, num_workers=3, collate_fn=collater, batch_sampler=sampler_val)
+        sampler_val = AspectRatioBasedSampler(dataset_val, batch_size=64, drop_last=False)
+        dataloader_val = DataLoader(dataset_val, num_workers=32, collate_fn=collater, batch_sampler=sampler_val)
+    print(f"Time to create Loader: {time.time() - start_time:.2f} seconds")
 
     # ---------------------- Model Setup ----------------------
     if parser.depth == 18:
@@ -115,6 +121,7 @@ def main(args=None):
     retinanet.training = True
 
     # --------------- Optimizer and Scheduler ----------------
+    print('Setting up Optimizer.')
     optimizer = optim.Adam(retinanet.parameters(), lr=1e-5)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
 
@@ -130,6 +137,7 @@ def main(args=None):
     path = "datasets/miccai_2022_buv_imgs/models" # Save the models
 
     for epoch_num in range(parser.epochs):
+        print(f'=== Epoch {epoch_num + 1}/{parser.epochs} ===')
         retinanet.train()
         retinanet.module.freeze_bn()
 
@@ -165,13 +173,14 @@ def main(args=None):
                 loss_hist.append(float(loss))
                 epoch_loss.append(float(loss))
 
-                print(
-                    'Epoch: {} | Iteration: {} | Classification loss: {:1.5f} | '
-                    'Regression loss: {:1.5f} | Running loss: {:1.5f}'.format(
-                        epoch_num, iter_num, float(classification_loss), float(regression_loss),
-                        np.mean(loss_hist)
+                if iter_num % 100 == 0:
+                    print(
+                        'Epoch: {} | Iteration: {} | Classification loss: {:1.5f} | '
+                        'Regression loss: {:1.5f} | Running loss: {:1.5f}'.format(
+                            epoch_num, iter_num, float(classification_loss), float(regression_loss),
+                            np.mean(loss_hist)
+                        )
                     )
-                )
 
                 del classification_loss
                 del regression_loss
