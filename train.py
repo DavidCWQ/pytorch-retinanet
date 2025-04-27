@@ -127,6 +127,8 @@ def main(args=None):
     print('Num training images: {}'.format(len(dataset_train)))
 
     # -------------------- Training Loop ---------------------
+    path = "datasets/miccai_2022_buv_imgs/models" # Save the models
+
     for epoch_num in range(parser.epochs):
         retinanet.train()
         retinanet.module.freeze_bn()
@@ -191,11 +193,11 @@ def main(args=None):
         scheduler.step(np.mean(epoch_loss))
 
         # Save model checkpoint
-        torch.save(retinanet.module, '{}_retinanet_{}.pt'.format(parser.dataset, epoch_num))
+        torch.save(retinanet.module, '{}/{}_retinanet_{}.pt'.format(path, parser.dataset, epoch_num))
 
     # ------------------- Save Final Model -------------------
     retinanet.eval()
-    torch.save(retinanet, 'model_final.pt')
+    torch.save(retinanet, '{}/model_final.pt'.format(path))
 
 
 if __name__ == '__main__':
