@@ -16,7 +16,7 @@ from retinanet import coco_eval
 from retinanet import csv_eval
 
 # Ensure PyTorch version is 1.x
-assert torch.__version__.split('.')[0] == '1'
+# assert torch.__version__.split('.')[0] == '1'
 
 print('CUDA available: {}'.format(torch.cuda.is_available()))
 

@@ -29,6 +29,10 @@ def convert_json_to_csv(json_path, images_base_path, annotations_csv_path, class
         x2 = x1 + w
         y2 = y1 + h
 
+        # Make x1, y1 always the min; x2, y2 always the max
+        x1, x2 = min(x1, x2), max(x1, x2)
+        y1, y2 = min(y1, y2), max(y1, y2)
+
         category_name = categories[annotation['category_id']]
 
         annotation_rows.append([file_path, int(x1), int(y1), int(x2), int(y2), category_name])
