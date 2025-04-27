@@ -160,7 +160,7 @@ def evaluate(
     """ Evaluate a given dataset using a given retinanet.
     # Arguments
         generator       : The generator that represents the dataset to evaluate.
-        retinanet           : The retinanet to evaluate.
+        retinanet       : The retinanet to evaluate.
         iou_threshold   : The threshold used to consider when a detection is positive or negative.
         score_threshold : The score confidence threshold to use for detections.
         max_detections  : The maximum number of detections to use per image.
