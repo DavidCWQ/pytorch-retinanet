@@ -85,12 +85,12 @@ def main(args=None):
 
     # ------------------- DataLoader Setup --------------------
     print('Setting up Loaders...')
-    sampler = AspectRatioBasedSampler(dataset_train, batch_size=64, drop_last=False)
-    dataloader_train = DataLoader(dataset_train, num_workers=32, collate_fn=collater, batch_sampler=sampler)
+    sampler = AspectRatioBasedSampler(dataset_train, batch_size=32, drop_last=False)
+    dataloader_train = DataLoader(dataset_train, num_workers=16, collate_fn=collater, batch_sampler=sampler)
 
     if dataset_val is not None:
-        sampler_val = AspectRatioBasedSampler(dataset_val, batch_size=64, drop_last=False)
-        dataloader_val = DataLoader(dataset_val, num_workers=32, collate_fn=collater, batch_sampler=sampler_val)
+        sampler_val = AspectRatioBasedSampler(dataset_val, batch_size=32, drop_last=False)
+        dataloader_val = DataLoader(dataset_val, num_workers=16, collate_fn=collater, batch_sampler=sampler_val)
     print(f"Time to create Loader: {time.time() - start_time:.2f} seconds")
 
     # ---------------------- Model Setup ----------------------
@@ -123,7 +123,7 @@ def main(args=None):
     # --------------- Optimizer and Scheduler ----------------
     print('Setting up Optimizer.')
     optimizer = optim.Adam(retinanet.parameters(), lr=1e-5)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3)
 
     # Loss history
     loss_hist = collections.deque(maxlen=500)

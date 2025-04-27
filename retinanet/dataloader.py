@@ -216,7 +216,11 @@ class CSVDataset(Dataset):
     def load_image(self, image_index):
         img = skimage.io.imread(self.image_names[image_index])
 
-        if len(img.shape) == 2:
+        # Convert RGBA to RGB by removing the alpha channel (if the image is RGBA)
+        if img.shape[-1] == 4:  # Check if the image has 4 channels (RGBA)
+            img = img[..., :3]  # Take only the first 3 channels (RGB)
+
+        if len(img.shape) == 2: # If the image is grayscale, convert it to RGB
             img = skimage.color.gray2rgb(img)
 
         return img.astype(np.float32)/255.0
