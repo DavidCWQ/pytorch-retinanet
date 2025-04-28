@@ -167,16 +167,15 @@ def evaluate(
     # Returns
         A dict mapping class names to mAP scores.
     """
-    precision = None
-    recall = None
 
     # gather all detections and annotations
-
     all_detections     = _get_detections(generator, retinanet, score_threshold=score_threshold, max_detections=max_detections, save_path=save_path)
     all_annotations    = _get_annotations(generator)
 
     average_precisions = {}
+    label_arr = list(generator.classes.values())
 
+    print('\nmAP:')
     for label in range(generator.num_classes()):
         false_positives = np.zeros((0,))
         true_positives  = np.zeros((0,))
@@ -231,10 +230,7 @@ def evaluate(
         average_precision  = _compute_ap(recall, precision)
         average_precisions[label] = average_precision, num_annotations
 
-
-    print('\nmAP:')
-    label_arr = list(generator.classes.values())
-    for label in range(generator.num_classes()):
+        # print computation results
         label_name = generator.label_to_name(label_arr[label])
         print('{}: {}'.format(label_name, average_precisions[label][0]))
         print("Precision: ", precision[-1])
@@ -252,6 +248,5 @@ def evaluate(
 
             # function to show the plot
             plt.savefig(save_path+'/'+label_name+'_precision_recall.jpg')
-
 
     return average_precisions

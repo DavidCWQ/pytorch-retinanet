@@ -299,7 +299,7 @@ class CSVDataset(Dataset):
         return self.labels[label]
 
     def num_classes(self):
-        return max(self.classes.values()) + 1
+        return len(self.classes)
 
     def image_aspect_ratio(self, image_index):
         image = Image.open(self.image_names[image_index])
