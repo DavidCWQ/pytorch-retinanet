@@ -5,7 +5,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 import torch
-
+from numpy.f2py.tests.test_array_from_pyobj import Array
 
 
 def compute_overlap(a, b):
@@ -168,8 +168,8 @@ def evaluate(
     # Returns
         A dict mapping class names to mAP scores.
     """
-
-
+    precision = None
+    recall = None
 
     # gather all detections and annotations
 
@@ -234,17 +234,18 @@ def evaluate(
 
 
     print('\nmAP:')
+    label_arr = list(generator.classes.keys())
     for label in range(generator.num_classes()):
-        label_name = generator.label_to_name(label)
+        label_name = generator.label_to_name(label_arr[label])
         print('{}: {}'.format(label_name, average_precisions[label][0]))
-        print("Precision: ",precision[-1])
-        print("Recall: ",recall[-1])
+        print("Precision: ", precision[-1])
+        print("Recall: ", recall[-1])
         
-        if save_path!=None:
+        if save_path is not None:
             plt.plot(recall,precision)
-            # naming the x axis 
+            # naming the x-axis
             plt.xlabel('Recall') 
-            # naming the y axis 
+            # naming the y-axis
             plt.ylabel('Precision') 
 
             # giving a title to my graph 
@@ -254,6 +255,4 @@ def evaluate(
             plt.savefig(save_path+'/'+label_name+'_precision_recall.jpg')
 
 
-
     return average_precisions
-

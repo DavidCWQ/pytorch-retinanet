@@ -8,8 +8,7 @@ from retinanet.dataloader import CSVDataset, Resizer, Normalizer
 from retinanet import csv_eval
 
 # ------------------ Check Torch Version -------------------
-assert torch.__version__.split('.')[0] == '1'
-
+# assert torch.__version__.split('.')[0] == '1'
 print('CUDA available: {}'.format(torch.cuda.is_available()))
 
 
@@ -36,7 +35,7 @@ def main(args=None):
     )
 
     # ------------------- Model Loading --------------------
-    retinanet = torch.load(parser.model_path)
+    retinanet = torch.load(parser.model_path, weights_only=False)
 
     use_gpu = True
 
