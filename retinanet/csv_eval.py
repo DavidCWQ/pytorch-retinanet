@@ -26,7 +26,6 @@ def compute_overlap(a, b):
     ih = np.maximum(ih, 0)
 
     ua = np.expand_dims((a[:, 2] - a[:, 0]) * (a[:, 3] - a[:, 1]), axis=1) + area - iw * ih
-
     ua = np.maximum(ua, np.finfo(float).eps)
 
     intersection = iw * ih
@@ -177,6 +176,10 @@ def evaluate(
 
     print('\nmAP:')
     for label in range(generator.num_classes()):
+        if label is 0:
+            continue # Bug to fix Bug
+        label_name = generator.label_to_name(label)
+        print(label, label_name)
         false_positives = np.zeros((0,))
         true_positives  = np.zeros((0,))
         scores          = np.zeros((0,))
@@ -231,7 +234,6 @@ def evaluate(
         average_precisions[label] = average_precision, num_annotations
 
         # print computation results
-        label_name = generator.label_to_name(label_arr[label])
         print('{}: {}'.format(label_name, average_precisions[label][0]))
         print("Precision: ", precision[-1])
         print("Recall: ", recall[-1])

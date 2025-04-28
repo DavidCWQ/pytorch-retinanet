@@ -298,8 +298,8 @@ class CSVDataset(Dataset):
     def label_to_name(self, label):
         return self.labels[label]
 
-    def num_classes(self):
-        return len(self.classes)
+    def num_classes(self): # BUG Exist
+        return max(self.classes.values()) + 1
 
     def image_aspect_ratio(self, image_index):
         image = Image.open(self.image_names[image_index])
