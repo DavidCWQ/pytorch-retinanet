@@ -5,7 +5,6 @@ import json
 import os
 import matplotlib.pyplot as plt
 import torch
-from numpy.f2py.tests.test_array_from_pyobj import Array
 
 
 def compute_overlap(a, b):
@@ -234,7 +233,7 @@ def evaluate(
 
 
     print('\nmAP:')
-    label_arr = list(generator.classes.keys())
+    label_arr = list(generator.classes.values())
     for label in range(generator.num_classes()):
         label_name = generator.label_to_name(label_arr[label])
         print('{}: {}'.format(label_name, average_precisions[label][0]))
