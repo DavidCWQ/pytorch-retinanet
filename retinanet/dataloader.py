@@ -344,6 +344,7 @@ def collater(data):
 
     return {'img': padded_imgs, 'annot': annot_padded, 'scale': scales}
 
+
 class Resizer(object):
     """Convert ndarrays in sample to Tensors."""
 
@@ -379,6 +380,36 @@ class Resizer(object):
         return {'img': torch.from_numpy(new_image), 'annot': torch.from_numpy(annots), 'scale': scale}
 
 
+class InferenceResizer(object):
+    def __init__(self, min_side=608, max_side=1024):
+        self.min_side = min_side
+        self.max_side = max_side
+
+    def __call__(self, sample):
+        image = sample['img']
+
+        rows, cols, cns = image.shape
+        smallest_side = min(rows, cols)
+        largest_side = max(rows, cols)
+
+        scale = self.min_side / smallest_side
+
+        if largest_side * scale > self.max_side:
+            scale = self.max_side / largest_side
+
+        # Resize image
+        image = skimage.transform.resize(image, (int(round(rows * scale)), int(round(cols * scale))))
+        rows, cols, cns = image.shape
+
+        pad_w = 32 - rows % 32
+        pad_h = 32 - cols % 32
+
+        new_image = np.zeros((rows + pad_w, cols + pad_h, cns)).astype(np.float32)
+        new_image[:rows, :cols, :] = image.astype(np.float32)
+
+        return {'img': torch.from_numpy(new_image), 'scale': scale}
+
+
 class Augmenter(object):
     """Convert ndarrays in sample to Tensors."""
 
@@ -410,10 +441,19 @@ class Normalizer(object):
         self.std = np.array([[[0.229, 0.224, 0.225]]])
 
     def __call__(self, sample):
-
         image, annots = sample['img'], sample['annot']
-
         return {'img':((image.astype(np.float32)-self.mean)/self.std), 'annot': annots}
+
+
+class InferenceNormalizer(object):
+    def __init__(self):
+        self.mean = np.array([[[0.485, 0.456, 0.406]]])
+        self.std = np.array([[[0.229, 0.224, 0.225]]])
+
+    def __call__(self, sample):
+        image = sample['img']
+        return {'img': ((image.astype(np.float32) - self.mean) / self.std)}
+
 
 class UnNormalizer(object):
     def __init__(self, mean=None, std=None):
