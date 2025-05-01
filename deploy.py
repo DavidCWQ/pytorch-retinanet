@@ -130,6 +130,6 @@ def main(_model_path, _txt_path, _output_path):
 
 if __name__ == "__main__":
     model_path = 'datasets/miccai_2022_buv_imgs/models/csv_retinanet_59.pt'
-    txt_path = 'datasets/tsm_buv_imgs/tsm_train_paths.txt'
+    txt_path = 'datasets/tsm_buv_imgs/my_tsm_train_paths.txt'
     csv_path = 'datasets/tsm_buv_imgs/predictions.csv'
     main(model_path, txt_path, csv_path)
