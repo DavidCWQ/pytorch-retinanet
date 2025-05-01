@@ -15,16 +15,16 @@ transform = transforms.Compose([
 
 def load_model(_model_path):
     retinanet = torch.load(_model_path, weights_only=False)
-    # --------------- Model Evaluation Mode ----------------
-    retinanet.training = False
-    retinanet.eval()
-    retinanet.module.freeze_bn()
     # ------- Wrap with DataParallel for GPU support -------
     if torch.cuda.is_available():
         retinanet = torch.nn.DataParallel(retinanet).cuda()
         print('CUDA available: {}'.format(torch.cuda.is_available()))
     else:
         print('CUDA available: {}. Run on CPU.'.format(torch.cuda.is_available()))
+    # --------------- Model Evaluation Mode ----------------
+    retinanet.training = False
+    retinanet.eval()
+    retinanet.module.freeze_bn()
     # ------------------- Return Model ---------------------
     return retinanet
 
