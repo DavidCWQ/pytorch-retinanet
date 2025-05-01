@@ -56,9 +56,9 @@ def detect_objects(model, images):
                 img.permute(2, 0, 1).cuda().float().unsqueeze(dim=0)
             )
 
-        scores = scores[0].cpu().numpy()
-        boxes = boxes[0].cpu().numpy()
-        labels = classifications[0].cpu().numpy()
+        scores = scores.cpu().numpy()
+        boxes = boxes.cpu().numpy()
+        labels = classifications.cpu().numpy()
 
         boxes /= scale
         max_detections = 10
@@ -126,7 +126,7 @@ def main(_model_path, _txt_path, _output_path):
 
                 for p in predicts:
                     bbox = p['bbox']  # Assumes bbox is [x1, y1, x2, y2]
-                    writer.writerow([image_path] + bbox + [label_name[p['label']]])
+                    writer.writerow([image_path] + bbox + [label_name[p['label']-1]]) # Bug to fix bug
 
 
 if __name__ == "__main__":
