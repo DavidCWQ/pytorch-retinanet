@@ -106,6 +106,7 @@ def main(_model_path, _txt_path, _output_path):
     except IOError as e:
         print(f"Error: while reading file {_txt_path}: {e}")
         exit(-1)
+    print(f"Txt File Loaded.")
 
     for line in lines:
         path, count, label = line.strip().split()
