@@ -35,7 +35,7 @@ def evaluate_coco(dataset, model, threshold=0.05):
                 boxes[:, 3] -= boxes[:, 1]
 
                 # compute predicted labels and scores
-                #for box, score, label in zip(boxes[0], scores[0], labels[0]):
+                # for box, score, label in zip(boxes[0], scores[0], labels[0]):
                 for box_id in range(boxes.shape[0]):
                     score = float(scores[box_id])
                     label = int(labels[box_id])
