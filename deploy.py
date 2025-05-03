@@ -108,17 +108,17 @@ def main(_model_path, _txt_path, _output_path):
         exit(-1)
     print(f"Txt File Loaded.")
 
-    for line in lines:
-        path, count, label = line.strip().split()
-        count = int(count)
-        label = int(label)
+    with open(_output_path, mode='w', newline='') as csvfile:  # Moved here
+        writer = csv.writer(csvfile)
 
-        print(f"Processing: {path}, {count} images, class: {label_name[label]}")
-        images = load_images_from_tsm_path(path, count)
-        bboxes = detect_objects(model, images)
+        for line in lines:
+            path, count, label = line.strip().split()
+            count = int(count)
+            label = int(label)
 
-        with open(_output_path, mode='w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
+            print(f"Processing: {path}, {count} images, class: {label_name[label]}")
+            images = load_images_from_tsm_path(path, count)
+            bboxes = detect_objects(model, images)
 
             for idx, predicts in enumerate(bboxes):
                 image_name = f"{idx:06}.png"
