@@ -40,9 +40,8 @@ def generate_masks_from_bboxes(csv_path, output_dir, image_shape=(224, 224)):
 
         # Extract sub_path after 'rawframes/'
         sub_path = img_path.split("rawframes/")[1]  # 'malignant/malignant_9379001_1/000054.png'
-        # Insert '_mask' before '.png'
-        base, ext = os.path.splitext(sub_path)
-        mask_path = os.path.join(output_dir, base + "_mask" + ext)
+        # Join and create the mask path
+        mask_path = os.path.join(output_dir, sub_path)
         # Dir output_dir + "/malignant/malignant_9379001_1/"
         os.makedirs(os.path.dirname(mask_path), exist_ok=True)
         cv2.imwrite(mask_path, mask)
