@@ -46,7 +46,6 @@ def generate_masks_from_bboxes(csv_path, output_dir, image_shape=(224, 224)):
         # Dir output_dir + "/malignant/malignant_9379001_1/"
         os.makedirs(os.path.dirname(mask_path), exist_ok=True)
         cv2.imwrite(mask_path, mask)
-
         # Output generation progress
         counter += 1
         if counter % 1000 == 0:
@@ -58,3 +57,4 @@ generate_masks_from_bboxes(
     output_dir="../datasets/tsm_buv_imgs/masks",
     image_shape=(384, 450)  # adjust to real image size (h, w)
 )
+print("Done.")
